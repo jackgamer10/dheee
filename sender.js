@@ -48,6 +48,7 @@ async function checkSMTP(data) {
 async function readTemplate(templatePath, replacements) {
     try {
         let template = await fs.readFile(templatePath, 'utf-8');
+        const fakeData = generateFakeData();
 
         // Replace email-related tags
         template = template.replace(/\[-email-\]/g, replacements['-email-']);
@@ -59,6 +60,8 @@ async function readTemplate(templatePath, replacements) {
 
         // Replace random string tag
         template = template.replace(/\[-randomstring-\]/g, randomstring.generate());
+        template = template.replace(/\[-random_fname-\]/g, fakeData.companyName);
+        template = template.replace(/\[-random_femail-\]/g, fakeData.email);
 
         // Replace random number tag
         template = template.replace(/\[-randomnumber-\]/g, Math.floor(Math.random() * 10));
@@ -90,10 +93,19 @@ async function sendEmails(emailListPath, smtpConfig, templatePath, subject, time
 
                 const emailContent = await readTemplate(templatePath, replacements);
                 const emailSubject = await readTemplate(subject, replacements);
-                const processedSenderName = senderName.replace(/\[-randomletters-\]/g, randomstring.generate({ charset: 'alphabetic' }));
+
+                const fakeData = generateFakeData();
+                const processedSenderName = senderName
+                    .replace(/\[-randomletters-\]/g, randomstring.generate({ charset: 'alphabetic' }))
+                    .replace(/\[-random_fname-\]/g, fakeData.companyName)
+                    .replace(/\[-random_femail-\]/g, fakeData.email);
+
+                const fromEmail = smtpConfig.auth.user
+                    .replace(/\[-random_fname-\]/g, fakeData.companyName)
+                    .replace(/\[-random_femail-\]/g, fakeData.email);
 
                 await transporter.sendMail({
-                    from: `"${processedSenderName}" <${smtpConfig.auth.user}>`, // Include sender name
+                    from: `"${processedSenderName}" <${fromEmail}>`, // Include sender name
                     to: email,
                     subject: emailSubject,
                     html: emailContent,
@@ -123,6 +135,18 @@ function validateEmail(email) {
     }
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+}
+
+const FAKE_COMPANY_NOUNS = ['Solutions', 'Systems', 'Enterprises', 'Innovations', 'Dynamics', 'Technologies', 'Group', 'Partners'];
+const FAKE_COMPANY_ADJECTIVES = ['Global', 'Dynamic', 'Innovative', 'Strategic', 'Advanced', 'Creative', 'Secure', 'Future'];
+
+function generateFakeData() {
+    const adjective = FAKE_COMPANY_ADJECTIVES[Math.floor(Math.random() * FAKE_COMPANY_ADJECTIVES.length)];
+    const noun = FAKE_COMPANY_NOUNS[Math.floor(Math.random() * FAKE_COMPANY_NOUNS.length)];
+    const companyName = `${adjective} ${noun}`;
+    const domain = `${adjective.toLowerCase()}${noun.toLowerCase()}.com`;
+    const email = `contact@${domain}`;
+    return { companyName, email, domain };
 }
 
 function getCurrentTime(timezone, format) {
