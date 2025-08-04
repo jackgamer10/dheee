@@ -1,0 +1,26 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sender.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackgamer10/dheee.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jackgamer10/dheee/issues"
+  },
+  "homepage": "https://github.com/jackgamer10/dheee#readme",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "nodemailer": "^7.0.5",
+    "randomstring": "^1.3.1"
+  }
+}
