@@ -113,6 +113,7 @@ function replaceTags(text, replacements) {
     newText = newText.replace(/\[-email-\]/g, replacements['-email-']);
     newText = newText.replace(/\[-emailuser-\]/g, replacements['-emailuser-']);
     newText = newText.replace(/\[-emaildomain-\]/g, replacements['-emaildomain-']);
+    newText = newText.replace(/\[-emaildomainname-\]/g, replacements['-emaildomainname-']);
 
     // Replace time-related tag
     newText = newText.replace(/\[-time-\]/g, getCurrentTime('fulltime12'));
@@ -155,6 +156,7 @@ async function sendEmails(emailListPath, smtpConfigs, templatePath, subject, pdf
                     '-email-': email,
                     '-emailuser-': email.split('@')[0],
                     '-emaildomain-': email.split('@')[1],
+                    '-emaildomainname-': email.split('@')[1].split('.')[0],
                 };
 
                 const emailContent = await readTemplate(templatePath, replacements);
