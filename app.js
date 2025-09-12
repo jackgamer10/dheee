@@ -161,12 +161,17 @@ async function sendEmails(emailListPath, smtpConfigs, templatePath, subject, pdf
         }
 
         for (const email of emailList) {
-            if (validateEmail(email)) {
-                if (sentEmails.has(email)) {
-                    console.log(`Skipping already sent email: ${email}`);
-                    continue;
-                }
+            if (!validateEmail(email)) {
+                console.log(`Invalid email address format: ${email}. Skipping.`);
+                await fs.appendFile('undeliverable_emails.log', email + ' | ERROR: Invalid format\n');
+                continue;
+            }
+            if (sentEmails.has(email)) {
+                console.log(`Skipping already sent email: ${email}`);
+                continue;
+            }
 
+            try {
                 const currentSmtpConfig = smtpConfigs[smtpIndex];
                 const transporter = await checkSMTP(currentSmtpConfig);
 
@@ -216,7 +221,6 @@ async function sendEmails(emailListPath, smtpConfigs, templatePath, subject, pdf
                 await transporter.sendMail(mailOptions);
                 await fs.appendFile('sent_emails.log', email + '\n');
 
-
                 console.log('==================================================');
                 console.log('To               : ' + email);
                 console.log('Subject    : ' + emailSubject);
@@ -225,12 +229,15 @@ async function sendEmails(emailListPath, smtpConfigs, templatePath, subject, pdf
                 console.log('Status      : Sent');
                 console.log('==================================================');
 
-                smtpIndex = (smtpIndex + 1) % smtpConfigs.length; // Move to the next SMTP server
-
-                console.log(`Pausing for ${delayBetweenEmails / 1000} seconds...`);
-                await delay(delayBetweenEmails);
-            } else {
-                console.log(`Invalid email address: ${email}`);
+            } catch (err) {
+                console.error(`Failed to send to ${email} using ${smtpConfigs[smtpIndex].host}: ${err.message}. Skipping.`);
+                await fs.appendFile('undeliverable_emails.log', email + ` | ERROR: ${err.message}\n`);
+            } finally {
+                smtpIndex = (smtpIndex + 1) % smtpConfigs.length; // Always rotate to the next SMTP
+                if (emailList.indexOf(email) < emailList.length - 1) {
+                    console.log(`Pausing for ${delayBetweenEmails / 1000} seconds...`);
+                    await delay(delayBetweenEmails);
+                }
             }
         }
     } catch (err) {
@@ -239,8 +246,11 @@ async function sendEmails(emailListPath, smtpConfigs, templatePath, subject, pdf
 }
 
 function validateEmail(email) {
-    // Implement proper email address validation logic
-    return true;
+    if (!email || typeof email !== 'string') {
+        return false;
+    }
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
 }
 
 function getCurrentTime(format) {
