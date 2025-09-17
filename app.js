@@ -147,27 +147,10 @@ async function sendEmails(emailListPath, smtpConfigs, templatePath, subject, pdf
         const emailList = (await fs.readFile(emailListPath, 'utf-8')).split(/\r?\n/);
         let smtpIndex = 0;
 
-        let sentEmails = new Set();
-        try {
-            const sentEmailsData = await fs.readFile('sent_emails.log', 'utf-8');
-            sentEmails = new Set(sentEmailsData.split(/\r?\n/).filter(line => line.trim() !== ''));
-            console.log(`Loaded ${sentEmails.size} previously sent emails.`);
-        } catch (err) {
-            if (err.code === 'ENOENT') {
-                console.log('No previously sent emails found. Starting fresh.');
-            } else {
-                throw err; // rethrow other errors
-            }
-        }
-
         for (const email of emailList) {
             if (!validateEmail(email)) {
                 console.log(`Invalid email address format: ${email}. Skipping.`);
                 await fs.appendFile('undeliverable_emails.log', email + ' | ERROR: Invalid format\n');
-                continue;
-            }
-            if (sentEmails.has(email)) {
-                console.log(`Skipping already sent email: ${email}`);
                 continue;
             }
 
@@ -219,7 +202,6 @@ async function sendEmails(emailListPath, smtpConfigs, templatePath, subject, pdf
                 }
 
                 await transporter.sendMail(mailOptions);
-                await fs.appendFile('sent_emails.log', email + '\n');
 
                 console.log('==================================================');
                 console.log('To               : ' + email);
