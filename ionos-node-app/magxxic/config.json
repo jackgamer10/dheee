@@ -1,0 +1,9 @@
+{
+  "sender_domain": "ionos-help.com",
+  "dkim_selector": "default",
+  "dkim_enabled": false,
+  "hide_ip": false,
+  "attach_pdf": false,
+  "validate_proxies": false,
+  "senders": ["support@ionos-help.com"]
+}
