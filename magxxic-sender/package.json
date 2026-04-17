@@ -1,0 +1,14 @@
+{
+  "name": "magxxic-sender",
+  "version": "2.2.1",
+  "description": "Magxxic direct-to-mx delivery system",
+  "main": "magxxic_main.js",
+  "scripts": {
+    "start": "node magxxic_main.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "express": "^4.18.2"
+  }
+}
