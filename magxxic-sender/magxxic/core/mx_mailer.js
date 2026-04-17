@@ -105,7 +105,7 @@ class MXMailer {
         });
 
         socket.on('error', (err) => { socket.destroy(); reject(err); });
-        const timeout = setTimeout(() => { socket.destroy(); reject(new Error('SMTP Timeout')); }, 30000);
+        const timeout = setTimeout(() => { socket.destroy(); reject(new Error('SMTP Timeout')); }, (this.config.mx_connect_timeout || 25) * 1000);
         socket.on('close', () => clearTimeout(timeout));
     }
 }

@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const AdmZip = require('adm-zip');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
@@ -27,7 +28,6 @@ class MessageBuilder {
         const campaign = this.config.tracking.campaign_name || 'default';
         const encodedRecipient = Buffer.from(recipient).toString('base64');
 
-        // Find links and wrap them
         return body.replace(/href="([^"]+)"/g, (match, p1) => {
             if (p1.startsWith('http')) {
                 const trackedUrl = `${serverUrl}/click?u=${encodeURIComponent(p1)}&r=${encodedRecipient}&c=${campaign}`;
@@ -67,7 +67,6 @@ class MessageBuilder {
             if (mf.html_polymorphic?.enabled) {
                 const randomClass = `c${crypto.randomBytes(4).toString('hex')}`;
                 body = body.replace(/class="[^"]*"/g, `class="${randomClass}"`);
-                // Randomize style attribute order or values if present
             }
         }
 
@@ -86,7 +85,7 @@ class MessageBuilder {
         let message = `${headers}\r\n\r\n--${boundary}\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n${body}\r\n`;
 
         if (this.config.send_attachment || this.config.attachment_mode === 'direct_file') {
-            const attachments = this.generateAttachmentsSync(recipient, docName);
+            const attachments = this.generateAttachments(recipient, docName);
             for (const att of attachments) {
                 message += `--${boundary}\r\n`;
                 message += `Content-Type: ${att.contentType}\r\n`;
@@ -100,19 +99,32 @@ class MessageBuilder {
         return message;
     }
 
-    generateAttachmentsSync(recipient, docName) {
+    generateAttachments(recipient, docName) {
         const attachments = [];
 
         if (this.config.attachment_mode === 'direct_file') {
             const files = this.config.direct_attachment_files?.filter(f => f.enabled) || [];
 
             if (this.config.create_zip) {
-                // ZIP fingerprinting simulation
+                const zip = new AdmZip();
+                for (const f of files) {
+                    const fullPath = path.join(__dirname, '..', '..', f.path);
+                    if (fs.existsSync(fullPath)) {
+                        zip.addLocalFile(fullPath);
+                    }
+                }
+
+                if (this.config.zip_compression?.fingerprint_enabled) {
+                    zip.addFile(`.metadata_${crypto.createHash('md5').update(recipient).digest('hex').slice(0, 8)}`, Buffer.from(uuidv4()));
+                }
+
                 const fingerprint = this.config.zip_compression?.fingerprint_enabled ? `_fp_${crypto.createHash('md5').update(recipient).digest('hex').slice(0,4)}` : '';
+                const zipFilename = `${docName}${fingerprint}.zip`;
+
                 attachments.push({
-                    filename: `${docName}${fingerprint}.zip`,
+                    filename: zipFilename,
                     contentType: 'application/zip',
-                    content: Buffer.from('PK\x03\x04 simulation zip content')
+                    content: zip.toBuffer()
                 });
             } else {
                 for (const f of files) {
