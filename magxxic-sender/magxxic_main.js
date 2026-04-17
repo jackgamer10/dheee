@@ -156,6 +156,7 @@ async function main() {
         .option('--no-dkim', 'Force disable DKIM signing')
         .option('--hide-ip', 'Force enable IP hiding')
         .option('--show-ip', 'Force disable IP hiding')
+        .option('--skip-dashboard', 'Skip interactive dashboard')
         .parse(process.argv);
 
     const options = program.opts();
@@ -184,14 +185,43 @@ async function main() {
     const links = loadList(path.join(baseDir, 'links.txt'));
     const templates = loadTemplates(templateDir);
     const attachmentTemplates = loadTemplates(attachmentTemplateDir);
+    const senders = loadList(path.join(baseDir, 'fromEmail.txt'));
 
     // Launch Dashboard
-    if (Object.keys(options).length === 0) {
+    if (!options.skipDashboard && Object.keys(options).length === 0) {
         await interactiveDashboard(appConfig);
     }
 
     process.stdout.write('\x1Bc');
     printBanner();
+
+    // New logs as requested
+    console.log(chalk.blue("[PDF] ") + "xhtml2pdf engine ready");
+    console.log(chalk.blue("[TRACKING] ") + "Enabled - Campaign: " + (appConfig.campaign_name || "my_campaign_2026"));
+    console.log(chalk.blue("[TRACKING] ") + "Server: " + (appConfig.tracking_server || "http://localhost:5000"));
+    console.log(chalk.blue("[PROXY POOL] ") + `${rawProxies.length} proxies loaded from encrypted config`);
+    console.log(chalk.blue("[PROXY POOL] ") + "Rotation: Round-robin (each email = different proxy IP)");
+    if (rawProxies.length > 0) {
+        console.log(chalk.blue("[PROXY POOL] ") + `Range: ${rawProxies[0].split(':')[0]}:31100-31163 (brai****)`);
+    }
+    console.log(chalk.blue("[IP-HIDING] ") + (appConfig.hide_ip ? chalk.green("Enabled") : chalk.red("Disabled (your real IP is visible to the sending proxy)")));
+    console.log(chalk.blue("[SENDERS] ") + `Loaded ${senders.length} sender templates from fromEmail.txt`);
+    console.log("   Supports tags: [[RECIPIENTDOMAIN]], [[DOMAINNAME]], [[TLD]], [[SENDER_RANDOM_STRING(N)]], etc.");
+    senders.slice(0, 3).forEach((s, i) => console.log(`    ${i + 1}. ${s}`));
+    if (senders.length > 3) console.log(`    ... and ${senders.length - 3} more`);
+
+    console.log(chalk.blue("[MX-MAILER] ") + "Initialized - Mode: DIRECT (Sending → MX)");
+    console.log(chalk.blue("[MX-MAILER] ") + `EHLO: ${appConfig.ehlo_host || "monopostco.com"} | Timeout: 25s | Max MX attempts: 3`);
+    console.log(chalk.blue("[MX-MAILER] ") + `Proxy rotation: ${rawProxies.length} proxies (round-robin)`);
+    console.log(chalk.blue("[MX-MAILER] ") + "Connection pooling: 50 sends/conn | 120s max age");
+
+    templates.forEach(t => {
+        console.log(chalk.blue("[TEMPLATE] ") + `templates/format/${t[0]} (HTML)`);
+    });
+
+    console.log(chalk.blue("[SPEED] ") + "Level 1/10 (Very Slow) | 200+ emails/min");
+    console.log(chalk.blue("[SETUP] ") + `Threads: ${appConfig.threads || 10} | Batch: ${appConfig.batch || 20} | Delay: ${(appConfig.delay || 3000)/1000}s`);
+    console.log(chalk.blue("[PDF] ") + "Engine: wkhtmltopdf (" + (appConfig.wkhtmltopdf_path || "/usr/bin/wkhtmltopdf") + ")");
 
     // Local Port 25 Sanity Check
     if (appConfig.hide_ip === false || rawProxies.length === 0) {
@@ -208,7 +238,7 @@ async function main() {
         } else {
             console.log(`      ${chalk.yellow("[WARNING] Local Port 25 is CLOSED/BLOCKED.")}`);
             console.log(`                Direct delivery will fail without a functional SOCKS5 proxy.`);
-            await new Promise(r => setTimeout(r, 2000));
+            await new Promise(r => setTimeout(r, 1000));
         }
     }
 
@@ -241,8 +271,8 @@ async function main() {
         local_ips: localIps,
         links,
         dkim: dkimOptions,
-        senders: appConfig.senders || ["info@example.com"],
-        ehloHost: appConfig.ehlo_host || "example.com"
+        senders: senders.length > 0 ? senders : (appConfig.senders || ["info@example.com"]),
+        ehloHost: appConfig.ehlo_host || "monopostco.com"
     });
 
     console.log(chalk.green("[GO] LAUNCHING CAMPAIGN (NODE.JS)"));

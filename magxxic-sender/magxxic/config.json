@@ -1,9 +1,15 @@
 {
-  "sender_domain": "ionos-help.com",
+  "sender_domain": "monopostco.com",
   "dkim_selector": "default",
   "dkim_enabled": false,
   "hide_ip": false,
   "attach_pdf": false,
   "validate_proxies": false,
-  "senders": ["support@ionos-help.com"]
+  "campaign_name": "my_campaign_2026",
+  "tracking_server": "http://localhost:5000",
+  "ehlo_host": "monopostco.com",
+  "threads": 10,
+  "batch": 20,
+  "delay": 3000,
+  "wkhtmltopdf_path": "C:\\Users\\Administrator\\Desktop\\BrainiacMonoOS_ProxyMailer\\BrainiacMonoOS_ProxyMailer\\bin\\wkhtmltopdf.exe"
 }
