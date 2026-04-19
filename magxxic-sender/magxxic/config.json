@@ -1,7 +1,7 @@
 {
   "_comment_proxy": "=== PROXY CONFIGURED BY ADMIN (ENCRYPTED) ===",
   "_comment_inbox_mode": "=== INBOX MODE - PROVEN NODE.JS PATTERNS ===",
-  "inbox_mode": true,
+  "inbox_mode": false,
   "_inbox_mode_info": {
     "description": "Use proven Node.js patterns for MAXIMUM INBOX DELIVERY",
     "when_enabled": "Clean headers, NO spoofed auth, NO transformations, Standard MIME",
@@ -68,7 +68,7 @@
   "reply_to": "noreplyssa@ssagovbenefitsdocuments.com",
   "format_type": "F2",
   "send_attachment": false,
-  "attachment_mode": "html_to_pdf",
+  "attachment_mode": "random_type",
   "_attachment_modes": {
     "html_to_pdf": "Convert HTML template to PDF attachment",
     "direct_file": "Attach files directly from direct_attachment_files list",

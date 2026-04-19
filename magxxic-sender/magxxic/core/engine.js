@@ -19,7 +19,7 @@ class CampaignEngine {
         this.delay = (config.sending_speed || 1) * 1000;
         this.mailer = new MXMailer(config);
         this.builder = new MessageBuilder(config);
-        this.throttles = new Map(); // Domain -> count
+        this.throttles = new Map();
     }
 
     async run(callback) {
@@ -54,18 +54,6 @@ class CampaignEngine {
             while (activePromises.length < this.threads && index < this.config.recipients.length) {
                 const currentIndex = index++;
                 const recipient = this.config.recipients[currentIndex];
-                const domain = recipient.split('@')[1];
-
-                // Throttling logic simulation
-                if (!isInbox && this.config.military_features?.domain_throttling?.enabled) {
-                    const domainCount = this.throttles.get(domain) || 0;
-                    if (domainCount >= 5) { // Threshold for throttling simulation
-                        await this.delayMs(5000); // Throttling delay
-                        this.throttles.set(domain, 0); // Reset
-                    }
-                    this.throttles.set(domain, domainCount + 1);
-                }
-
                 const senderTemplate = this.config.senders[currentIndex % this.config.senders.length];
                 const subject = this.config.subjects[currentIndex % this.config.subjects.length] || "Important Document";
                 const template = this.config.templates[currentIndex % this.config.templates.length]?.[1] || "<html><body>Test</body></html>";
@@ -73,22 +61,21 @@ class CampaignEngine {
 
                 const docNames = this.config.document_names || [];
                 const docNameBase = docNames.length > 0 ? docNames[Math.floor(Math.random() * docNames.length)] : (this.config.document_name || "Document");
-                const docName = `${docNameBase}${Math.floor(Math.random()*10000)}`;
 
                 const proxy = this.config.proxies[currentIndex % this.config.proxies.length];
-                const message = this.builder.build(recipient, senderTemplate, subject, template, link, docName);
+                const message = this.builder.build(recipient, senderTemplate, subject, template, link, docNameBase);
                 const processedSender = this.builder.processSender(senderTemplate, recipient);
 
                 const p = this.mailer.send(recipient, message, processedSender, proxy)
                     .then(() => {
                         this.stats.delivered++;
                         this.updateStats(recipient, true);
-                        callback(recipient, true, null, subject, docName, processedSender);
+                        callback(recipient, true, null, subject, docNameBase, processedSender);
                     })
                     .catch((e) => {
                         this.stats.failed++;
                         this.updateStats(recipient, false);
-                        callback(recipient, false, e.message, subject, docName, processedSender);
+                        callback(recipient, false, e.message, subject, docNameBase, processedSender);
                     });
 
                 activePromises.push(p);
