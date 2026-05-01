@@ -56,7 +56,9 @@ function printBanner(version = "2.2.1") {
     console.log(vTop);
     console.log(vMid);
     console.log(vBot);
+    console.log("\n" + chalk.cyan("=".repeat(85)));
     console.log(banner);
+    console.log(chalk.cyan("=".repeat(85)));
     console.log(chalk.blue("                             >>>  ") + chalk.red.bold("V A U L T") + chalk.blue("  <<<"));
     console.log(chalk.green("      >>> MAGXXIC VOT NO SMTP SND3R (NODE.JS) - STATUS: ARMED <<<"));
     console.log("      [RFC-2822] [DKIM-SIGNED] [SOCKS5-CHAIN] [ZERO-SMTP-RELAY]");
@@ -113,7 +115,7 @@ async function interactiveDashboard(appConfig) {
     while (true) {
         process.stdout.write('\x1Bc');
         printBanner();
-        console.log(chalk.blue.bold("=".repeat(30) + " CONFIGURATION DASHBOARD " + "=".repeat(29)));
+        console.log("\n" + chalk.blue.bold("=".repeat(30) + " CONFIGURATION DASHBOARD " + "=".repeat(29)));
 
         const options = [
             ["Inbox Mode", "inbox_mode", !!appConfig.inbox_mode],
