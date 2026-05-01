@@ -86,6 +86,6 @@
 
   <!-- MAGXXIC TEXT -->
   <text x="400" y="740" font-family="'Courier New', monospace" font-size="60" fill="#00ffff" text-anchor="middle" font-weight="bold" filter="url(#glow)">MAGXXIC VAULT</text>
-  <text x="400" y="775" font-family="'Courier New', monospace" font-size="20" fill="#00ff00" text-anchor="middle" opacity="0.8">SYSTEM STATUS: ARMED | PROTOCOL: SCORPION</text>
+  <text x="400" y="775" font-family="'Courier New', monospace" font-size="20" fill="#00ff00" text-anchor="middle" opacity="0.8">SYSTEM STATUS: ARMED | PROTOCOL: RATEL</text>
 
 </svg>

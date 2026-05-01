@@ -67,7 +67,7 @@ function printBanner(version = "2.2.1") {
     console.log(chalk.blue("                             >>>  ") + chalk.red.bold("V A U L T") + chalk.blue("  <<<"));
     console.log(chalk.green("      >>> MAGXXIC VOT NO SMTP SND3R (NODE.JS) - STATUS: ARMED <<<"));
     console.log("      [RFC-2822] [DKIM-SIGNED] [SOCKS5-CHAIN] [ZERO-SMTP-RELAY]");
-    console.log(`      VERSION ${version} | BUILD 2026-02-14 | SCORPION PROTOCOL`);
+    console.log(`      VERSION ${version} | BUILD 2026-02-14 | RATEL PROTOCOL`);
     console.log(chalk.green("=".repeat(85)));
 }
 
